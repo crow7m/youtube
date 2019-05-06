@@ -1,7 +1,7 @@
 <template>
-    <div class="video-list-wrap">
-        <video-item v-if="getVideosArr.length"
-                    v-for="(singleVideo, index) in getVideosArr"
+    <div class="video-list-wrap"  v-if="getVideosArr.length">
+        <video-item
+                    v-for="(singleVideo, index) in 70"
                     :videoData="singleVideo"
                     :key="index"></video-item>
     </div>
@@ -9,8 +9,8 @@
 
 <script>
     import { mapActions, mapGetters } from 'vuex';
-    import videoService from '../services/videoService';
-    import videoItem from '@/components/videoItem.vue';
+    import videoService from '../../services/videoService';
+    import videoItem from './videoItem.vue';
 
     export default {
         name: 'HelloWorld',
@@ -23,6 +23,7 @@
                 nextPageToken: '',
                 bottom: false,
                 busy: false,
+                totalLimit: null,
             };
         },
         computed: {
@@ -43,10 +44,8 @@
                                    .then(({data}) => {
                                        this.busy = true;
                                              self.nextPageToken = data.nextPageToken;
+                                             self.totalLimit = data.pageInfo.totalResults;
                                              self.updateVideos(data.items);
-                                             if(this.bottomVisible()) {
-                                                 this.requestVideos();
-                                             }
                                              this.busy = false;
                                          },
                                          (error) => {
@@ -54,17 +53,22 @@
                                              console.log(error, 'error getting videos');
                                          });
             },
+            scrollHandler(){
+                if(this.$route.name == 'home'){
+                    this.bottom = this.bottomVisible();
+                    if(this.bottomVisible()){
+                        if(this.totalLimit <= this.getVideosArr.length)return
+                        this.requestVideos();
+                    }
+                }
+            }
+        },
+        beforeDestroy(){
+            window.removeEventListener('scroll', this.scrollHandler);
         },
         created() {
-            window.addEventListener('scroll', () => {
-                this.bottom = this.bottomVisible();
-                if(this.bottom){
-                    this.requestVideos();
-                }
-            });
+            window.addEventListener('scroll', this.scrollHandler);
             this.requestVideos();
-
-
         }
     };
 </script>
@@ -74,9 +78,9 @@
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
-        justify-content: flex-start;
+        justify-content: center;
         margin: 0 auto;
-        max-width: 980px;
-        width: 100%
+        max-width: 980px; //limit to be centered
+        width: 100%;
     }
 </style>

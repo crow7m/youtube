@@ -1,13 +1,25 @@
 <template>
   <div id="app">
     <div id="nav">
+      <page-header></page-header>
       <router-link to="/">Video List</router-link>
       <!--<router-link to="/about">About</router-link>-->
     </div>
-    <router-view/>
+    <div class="page-content">
+      <router-view/>
+    </div>
+
   </div>
 </template>
-
+<script>
+  // @ is an alias to /src
+  import pageHeader from './components/pageParts/header.vue';
+  export default {
+    components: {
+      pageHeader,
+    }
+  }
+</script>
 <style lang="less">
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
@@ -16,8 +28,13 @@
   text-align: center;
   color: #2c3e50;
 }
+.page-content{
+  flex: 1 1 auto;
+  position: relative;/* need this to position inner content */
+  overflow-y: auto;
+  margin-top: 48px;
+}
 #nav {
-  padding: 30px;
   a {
     font-weight: bold;
     color: #2c3e50;

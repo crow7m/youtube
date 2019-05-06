@@ -1,16 +1,21 @@
 import axios from "axios";
-
-const path = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&part=snippet`;
-
+const apiKey = 'AIzaSyANoGcUgMWhedKX7RKZ66wj6LYd2SEuljM';
+// const apiKey = 'AIzaSyDDXQZPV4H9oKc52-X101LGdeEQ0iSpBlA';
+const pathSearch = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&part=snippet&metrics=views`;
+const pathVideoSpecific = `https://www.googleapis.com/youtube/v3/videos?key=${apiKey}&part=statistics`;
 function videoItem(objInit) {
     this.src = objInit.src || '';
-    this.thumbnail = objInit.snippet.thumbnails.high.url;
-    this.title = objInit.snippet.title;
-    this.id = objInit.id.videoId;
-    this.datePublished = objInit.snippet.publishedAt
-    this.description = objInit.snippet.description
+    this.thumbnail = objInit.snippet.thumbnails.high.url || '';
+    this.title = objInit.snippet.title || ''
+    this.id = objInit.id.videoId || '';
+    this.datePublished = objInit.snippet.publishedAt || '';
+    this.description = objInit.snippet.description || '';
+    this.channelTitle = objInit.snippet.channelTitle || '';
 }
-
+function videoDetailsItem(objInit) {
+    this.likeCount = {label : 'Likes', value:  objInit.statistics.likeCount || 0}
+    this.viewCount = {label: 'Views',value: objInit.statistics.viewCount || 0}
+}
 export default {
     getVideos: (params) => {
        let configObj = {
@@ -20,9 +25,9 @@ export default {
        let url ='';
        //have to check for nextPage token otherwise youtube API is upset
        if(configObj.nextPageToken){
-           url = `${path}&pageToken=${configObj.nextPageToken}&maxResults=${configObj.quantaty}&order=viewcount`
+           url = `${pathSearch}&pageToken=${configObj.nextPageToken}&maxResults=${configObj.quantaty}&order=viewcount`
        }else{
-           url = `${path}&&maxResults=${configObj.quantaty}&order=viewcount`
+           url = `${pathSearch}&&maxResults=${configObj.quantaty}&order=viewcount`
        }
         return axios.get(url)
                     .then((resp) => {
@@ -31,11 +36,22 @@ export default {
                         return error;
                     });
     },
-    //create client side formatted obj to not be binded to youtube format
+    getSingleVideoDetails: (id) => {
+        let url = `${pathVideoSpecific}&id=${id}`;
+        return axios.get(url)
+            .then((resp) => {
+                return resp;
+            }, (error) => {
+                return error;
+            });
+    },
+    //create client side formatted obj to not be binded to youtube format for video
     createVideoItem: (arr) => {
       return arr.map(objInit => {
             return new videoItem(objInit);
         });
+    },
+    createVideoDetailsItem: (obj) => {
+      return new videoDetailsItem(obj)
     }
-
 };

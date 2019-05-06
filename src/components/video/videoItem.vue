@@ -1,22 +1,23 @@
 <template>
     <div class="video-item-wrap">
         <div class="video-card">
-            <div class="header">
-                <span class="title">{{videoData.title}}</span>
-            </div>
             <div class="thumbnail-wrap">
-                <img class="video-thumbnail" :src="videoData.thumbnail" alt="">
+                <img class="video-thumbnail" :src="videoData.thumbnail" alt="video preview">
+            </div>
+            <div class="title-holder">
+                <span class="title">{{ellipseTitle || 'sdfsdfsdfdsf'}}</span>
             </div>
             <div class="footer-info">
-                <button class="video-action" @click="openVideo(videoData.id)">
-                <span> Open Video</span>
-                </button>
+                <a class="video-action" @click="seeDetails()">
+                <span> Lets watch</span>
+                </a>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+    import {mapActions} from 'vuex';
     export default {
         name: "videoItem",
         props: {
@@ -24,17 +25,33 @@
                 type: Object,
             },
         },
+        computed: {
+            ellipseTitle(){
+                if(this.videoData.title && this.videoData.title.length > 21){
+                    let ellipsed = this.videoData.title.substring(1, 21);
+                    return `${ellipsed}...`
+                }
+                // this.currentVideo.title
+            }
+        },
         methods: {
-            openVideo(videoId) {
-                let link = `https://www.youtube.com/watch?v=${videoId}`;
-                window.open(link, '_blank')
+            ...mapActions(['updateActiveVideo']),
+            seeDetails() {
+                let activeVideo = {
+                    title: this.videoData.title,
+                    thumbnail: this.videoData.thumbnail,
+                    channelTitle: this.videoData.channelTitle
+
+                };
+               this.updateActiveVideo(activeVideo);
+               this.$router.push({name: 'videoDetails', params: { id: this.videoData.id }})
 
             }
         },
     };
 </script>
 
-<style lang=less>
+<style lang="less">
     @cardWidth: 260px;
     .video-item-wrap {
         display: flex;
@@ -52,15 +69,14 @@
             border-radius: 4px;
             cursor: pointer;
         }
-        .header{
+        .title-holder{
             text-align: left;
             padding: 8px 0 8px 0;
-            background-color: #f8f8f8;
             display: flex;
             flex-direction: row;
             width: 100%;
             .title{
-                font-size: 16px;
+                font-size: 1.5em;
                 color: #000000;
                 text-align: left;
                 padding-left: 12px;
@@ -71,33 +87,30 @@
             align-items: center;
             justify-content: center;
             .video-thumbnail{
-                max-width: 260px;
+                width: 260px;
                 height: auto;
+                max-height: 180px;
             }
         }
         .footer-info{
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
-            padding: 12px;
+            width: 100%;
+            text-align: left;
         }
         .video-action {
-            color: #fff !important;
+            color: #ed3330;
             cursor: pointer;
             text-transform: uppercase;
-            background: #ed3330;
+            /*background: #ed3330;*/
             padding: 12px 24px;
             border-radius: 5px;
             display: flex;
             border: none;
             &:hover {
-                background: #434343;
                 letter-spacing: 1px;
-                -webkit-box-shadow: 0px 5px 40px -10px rgba(0, 0, 0, 0.57);
-                -moz-box-shadow: 0px 5px 40px -10px rgba(0, 0, 0, 0.57);
-                box-shadow: 5px 40px -10px rgba(0, 0, 0, 0.57);
-                transition: all 0.4s ease 0s;
             }
         }
     }
