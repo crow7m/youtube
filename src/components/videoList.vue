@@ -1,58 +1,82 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
-  </div>
+    <div class="video-list-wrap">
+        <video-item v-if="getVideosArr.length"
+                    v-for="(singleVideo, index) in getVideosArr"
+                    :videoData="singleVideo"
+                    :key="index"></video-item>
+    </div>
 </template>
 
 <script>
-export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  }
-}
+    import { mapActions, mapGetters } from 'vuex';
+    import videoService from '../services/videoService';
+    import videoItem from '@/components/videoItem.vue';
+
+    export default {
+        name: 'HelloWorld',
+        components: {
+            videoItem,
+        },
+        data() {
+            return {
+                quantaty: 10,
+                nextPageToken: '',
+                bottom: false,
+                busy: false,
+            };
+        },
+        computed: {
+            ...mapGetters(['getVideosArr'])
+        },
+        methods: {
+            ...mapActions(['updateVideos']),
+            bottomVisible() {
+                const scrollY = window.scrollY;
+                const visible = document.documentElement.clientHeight;
+                const pageHeight = document.documentElement.scrollHeight;
+                const bottomOfPage = visible + scrollY >= pageHeight;
+                return bottomOfPage || pageHeight < visible;
+            },
+            requestVideos() {
+                let self = this;
+                return videoService.getVideos({quantaty: self.quantaty, nextPageToken: self.nextPageToken ? self.nextPageToken: '' })
+                                   .then(({data}) => {
+                                       this.busy = true;
+                                             self.nextPageToken = data.nextPageToken;
+                                             self.updateVideos(data.items);
+                                             if(this.bottomVisible()) {
+                                                 this.requestVideos();
+                                             }
+                                             this.busy = false;
+                                         },
+                                         (error) => {
+                                             this.isComplete = true;
+                                             console.log(error, 'error getting videos');
+                                         });
+            },
+        },
+        created() {
+            window.addEventListener('scroll', () => {
+                this.bottom = this.bottomVisible();
+                if(this.bottom){
+                    this.requestVideos();
+                }
+            });
+            this.requestVideos();
+
+
+        }
+    };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="less">
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
+<style lang="less">
+    .video-list-wrap {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        margin: 0 auto;
+        max-width: 980px;
+        width: 100%
+    }
 </style>
