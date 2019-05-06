@@ -9,7 +9,8 @@
             </div>
             <div class="footer-info">
                 <button class="video-action" @click="openVideo(videoData.id)">
-                    Open Video</button>
+                <span> Open Video</span>
+                </button>
             </div>
         </div>
     </div>
