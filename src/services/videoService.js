@@ -1,6 +1,5 @@
 import axios from "axios";
 
-const apiKey = 'AIzaSyANoGcUgMWhedKX7RKZ66wj6LYd2SEuljM';
 const path = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&part=snippet`;
 
 function videoItem(objInit) {
