@@ -5,7 +5,7 @@
                 <img class="video-thumbnail" :src="videoData.thumbnail" alt="video preview">
             </div>
             <div class="title-holder">
-                <span class="title">{{ellipseTitle || 'sdfsdfsdfdsf'}}</span>
+                <span class="title">{{ellipseTitle}}</span>
             </div>
             <div class="footer-info">
                 <a class="video-action" @click="seeDetails()">
@@ -28,7 +28,7 @@
         computed: {
             ellipseTitle(){
                 if(this.videoData.title && this.videoData.title.length > 21){
-                    let ellipsed = this.videoData.title.substring(1, 21);
+                    let ellipsed = this.videoData.title.substring(0, 21);
                     return `${ellipsed}...`
                 }
                 // this.currentVideo.title
