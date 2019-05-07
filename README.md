@@ -2,8 +2,17 @@
 
 ## Project setup
 ```
-npm install
-```
+1. git clone
+2. install *node.js if any exists
+### adds real time local server, and great ui interface to manage project
+3. npm install -g @vue/cli
+ ### install project dependencies
+4. npm install
+ ### Compiles and hot-reloads for development
+5. npm run serve
+6. copy paste generated url to browser to see the app
+7. bonus you can also run:  "vue ui" command to see vue cli managment dashboard
+ ```
 
 ### Compiles and hot-reloads for development
 ```
@@ -14,12 +23,6 @@ npm run serve
 ```
 npm run build
 ```
-
-### Run your tests
-```
-npm run test
-```
-
 ### Lints and fixes files
 ```
 npm run lint
