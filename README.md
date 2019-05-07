@@ -3,7 +3,7 @@
 ## Project setup
 ```
 1. git clone
-2. install *node.js if any exists
+2. install *node.js if any exists "https://nodejs.org/en/"
 ### adds real time local server, and great ui interface to manage project
 3. npm install -g @vue/cli
  ### install project dependencies
