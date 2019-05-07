@@ -1,12 +1,11 @@
 <template>
     <div class="video-list-wrap"  v-if="getVideosArr.length">
         <video-item
-                    v-for="(singleVideo, index) in 70"
+                    v-for="(singleVideo, index) in getVideosArr"
                     :videoData="singleVideo"
                     :key="index"></video-item>
     </div>
 </template>
-
 <script>
     import { mapActions, mapGetters } from 'vuex';
     import videoService from '../../services/videoService';
@@ -50,7 +49,7 @@
                                          },
                                          (error) => {
                                              this.isComplete = true;
-                                             console.log(error, 'error getting videos');
+                                             console.error(error, 'error videos get')
                                          });
             },
             scrollHandler(){
