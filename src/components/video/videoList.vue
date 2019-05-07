@@ -1,11 +1,13 @@
 <template>
-    <div class="video-list-wrap"  v-if="getVideosArr.length">
-        <video-item
+    <div class="video-list-wrap">
+        <video-item v-if="getVideosArr.length"
                     v-for="(singleVideo, index) in getVideosArr"
                     :videoData="singleVideo"
                     :key="index"></video-item>
+        <div v-if="errorResp" class="error">{{errorText}}</div>
     </div>
 </template>
+
 <script>
     import { mapActions, mapGetters } from 'vuex';
     import videoService from '../../services/videoService';
@@ -23,6 +25,8 @@
                 bottom: false,
                 busy: false,
                 totalLimit: null,
+                errorText: '',
+                errorResp: false
             };
         },
         computed: {
@@ -41,14 +45,19 @@
                 let self = this;
                 return videoService.getVideos({quantaty: self.quantaty, nextPageToken: self.nextPageToken ? self.nextPageToken: '' })
                                    .then(({data}) => {
-                                       this.busy = true;
+                                       if(!data){
+                                            self.showError();
+                                            return
+                                       }
+                                       self.busy = true;
                                              self.nextPageToken = data.nextPageToken;
                                              self.totalLimit = data.pageInfo.totalResults;
                                              self.updateVideos(data.items);
-                                             this.busy = false;
+                                             self.busy = false;
                                          },
                                          (error) => {
-                                             this.isComplete = true;
+                                             self.isComplete = true;
+                                             self.showError(error);
                                              console.error(error, 'error videos get')
                                          });
             },
@@ -60,6 +69,10 @@
                         this.requestVideos();
                     }
                 }
+            },
+            showError(error){
+                this.errorText = error && error.errors[0] ?  error.errors[0].message : 'Something went wromg please try again later'
+                this.errorResp = true;
             }
         },
         beforeDestroy(){

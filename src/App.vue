@@ -3,7 +3,6 @@
     <div id="nav">
       <page-header></page-header>
       <router-link to="/">Video List</router-link>
-      <!--<router-link to="/about">About</router-link>-->
     </div>
     <div class="page-content">
       <router-view/>
@@ -12,8 +11,7 @@
   </div>
 </template>
 <script>
-  // @ is an alias to /src
-  import pageHeader from './components/pageParts/header.vue';
+  import pageHeader from './components/pageParts/pageHeader.vue';
   export default {
     components: {
       pageHeader,
