@@ -108,6 +108,7 @@
             border-radius: 5px;
             display: flex;
             border: none;
+            outline: none;
             &:hover {
                 letter-spacing: 1px;
             }

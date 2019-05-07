@@ -19,7 +19,7 @@
                          <span>{{item.value}}</span>
                      </li>
                  </ul>
-                <button class="video-action" @click="openVideo(this.id)">
+                <button class="video-action" @click="openVideo(id)">
                     <span>Watch on YouTube</span>
                 </button>
             </div>
@@ -48,7 +48,7 @@
             },
             ellipsedTitle(){
                if(this.currentVideo.title && this.currentVideo.title.length > 21){
-               let ellips = this.currentVideo.title.substring(1, 21);
+               let ellips = this.currentVideo.title.substring(0, 21);
                return `${ellips}...`
                }
                 // this.currentVideo.title
@@ -147,6 +147,7 @@
             border: none;
             background: transparent;
             width: 100%;
+            outline: none;
             &:hover {
                 letter-spacing: 1px;
             }
