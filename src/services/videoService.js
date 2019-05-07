@@ -1,20 +1,23 @@
 import axios from "axios";
-// const apiKey = 'AIzaSyANoGcUgMWhedKX7RKZ66wj6LYd2SEuljM';
+        /*
+        * Add your api key here
+        * */
 const apiKey = 'AIzaSyDDXQZPV4H9oKc52-X101LGdeEQ0iSpBlA';
+
 const pathSearch = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&part=snippet&metrics=views`;
 const pathVideoSpecific = `https://www.googleapis.com/youtube/v3/videos?key=${apiKey}&part=statistics`;
 function videoItem(objInit) {
-    this.src = objInit.src || '';
+    //added all props in cse of need
     this.thumbnail = objInit.snippet.thumbnails.high.url || '';
-    this.title = objInit.snippet.title || ''
+    this.title = objInit.snippet.title || '';
     this.id = objInit.id.videoId || '';
     this.datePublished = objInit.snippet.publishedAt || '';
     this.description = objInit.snippet.description || '';
     this.channelTitle = objInit.snippet.channelTitle || '';
 }
 function videoDetailsItem(objInit) {
-    this.likeCount = {label : 'Likes', value:  objInit.statistics.likeCount || 0}
-    this.viewCount = {label: 'Views',value: objInit.statistics.viewCount || 0}
+    this.likeCount = {label : 'Likes', value:  objInit.statistics.likeCount || 0};
+    this.viewCount = {label: 'Views',value: objInit.statistics.viewCount || 0};
 }
 export default {
     getVideos: (params) => {

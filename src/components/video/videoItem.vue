@@ -26,12 +26,12 @@
             },
         },
         computed: {
+            //cut if to long, alternative to css text ellipsis fix, css way is better
             ellipseTitle(){
                 if(this.videoData.title && this.videoData.title.length > 21){
                     let ellipsed = this.videoData.title.substring(0, 21);
                     return `${ellipsed}...`
                 }
-                // this.currentVideo.title
             }
         },
         methods: {
@@ -104,7 +104,6 @@
             color: #ed3330;
             cursor: pointer;
             text-transform: uppercase;
-            /*background: #ed3330;*/
             padding: 12px 24px;
             border-radius: 5px;
             display: flex;

@@ -66,9 +66,8 @@
                     .then(({data}) => {
                             //will always return one one item, no need for loop or map
                             let item = data.items[0];
+                            //set video deetail
                             this.updateDetails(item);
-                            // this.details = updateDetails
-                            console.log('details', data)
                         },
                         (error) => {
                             console.log(error, 'error')
